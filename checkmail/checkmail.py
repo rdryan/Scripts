@@ -88,6 +88,10 @@ def readEmail():
                     f.write(data)
                     f.close()
 
+                    # delete this mail, Dangerous!!!
+                    #print "delete this mail"
+                    #p.dele(number)
+
     finally:
         p.quit()
 
