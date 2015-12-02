@@ -5,25 +5,16 @@ import email, poplib
 from getpass import getpass
 
 # Enter your gmail account details here so that the script can read emails
-emailUsername = raw_input('Please input your Yahoo Mail Accout:')
+emailUsername = raw_input('Please input your Gmail Accout:')
 emailPassword = getpass(prompt='Password:')
 
 # Change this (at your own risk) if you don't use gmail 
 # (e.g. to hotmail/yahoo/etc smtp servers)
-emailSMTPserver = 'smtp.yahoo.com'
-emailPOPserver  = 'pop.yahoo.com'
+emailSMTPserver = 'smtp.gmail.com'
+emailPOPserver  = 'pop.gmail.com'
 
 whitelists = []
 
-class Logger(object):
-    def __init__(self):
-        self.terminal = sys.stdout
-        self.log = open("p.log", "w")
-
-    def write(self, message):
-        self.terminal.write(message)
-        self.log.write(message)  
-        
 def getWhitelist():
     white = []
     f = open('whitelist.txt','r')
@@ -52,24 +43,50 @@ def readEmail():
             subject = message['Subject']
             mailfrom = message['From']
 
-            if not mailfrom in whitelists:      # if mail address is not in whitelist, jump to the next
-                continue
+            #print "mail from =====", mailfrom
+            
+            # if mail address is not in whitelist, jump to the next
+            isInWhitelist = False
+            
+            for t in whitelists:
+                if t in mailfrom:
+                    isInWhitelist = True
 
-            allowed_mimetypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+            if not isInWhitelist:
+                #print "not in whitelist"
+                continue
+                    
+            allowed_mimetypes = ["application/octet-stream"]
 
             response, lines, octets = p.retr(number)
             message = email.message_from_string('\n'.join(lines))
-            
+                    
+            #print "subject ====", email.Header.decode_header(subject)[0][0]
+
             for part in message.walk():
-                if part.get_content_type() == 'text/plain':
-                #if part.get_content_type() in allowed_mimetypes:
-                    #name = part.get_filename()
-                    #data = part.get_payload(decode=True)
-                    body = part.get_payload(decode=True)
-                    print "body=%s\n" % body
-                    #f = file(name,'wb')
-                    #f.write(data)
-                    #f.close()
+                
+                #body
+                #if part.get_content_type() == 'text/plain':
+                    #body = part.get_payload(decode=True)
+                    #print "body:\n %s\n" % body
+                
+                #attachment
+                if part.get_content_type() in allowed_mimetypes:
+                    filename = part.get_filename()
+                    
+                    if filename==None:
+                        continue
+                    filename = email.Header.decode_header(filename)[0][0]
+                    
+                    if not 'csv' in filename:
+                        continue
+                    
+                    print "extract csv file: ", filename
+                    
+                    data = part.get_payload(decode=True)
+                    f = file(filename,'wb')
+                    f.write(data)
+                    f.close()
 
     finally:
         p.quit()
@@ -79,17 +96,8 @@ def readEmail():
 
 #the main process
 if __name__ == "__main__":
-    
-    # print output to console and DSAChecker.log
-    sys.stdout = Logger()
-
-    # get parameter
-    if len(sys.argv) > 1:
-        licenceNumber = sys.argv[1]
-        theoryNumber = sys.argv[2]
         
-    whitelists = getWhitelist()
- 
+    whitelists = getWhitelist() 
 
-    #readEmail()
+    readEmail()
         
