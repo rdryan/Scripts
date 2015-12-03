@@ -20,7 +20,7 @@ def getWhitelist():
     f = open('whitelist.txt','r')
     for line in f:
         line = line.strip()
-        #print line
+        print "Add to whitelist: ", line
         white.append(line)    
     return white
 
@@ -43,7 +43,9 @@ def readEmail():
             subject = message['Subject']
             mailfrom = message['From']
 
-            #print "mail from =====", mailfrom
+            print "mail from ---- ", mailfrom
+            print "---- subject: ", subject
+            #print "subject ====", email.Header.decode_header(subject)[0][0]
             
             # if mail address is not in whitelist, jump to the next
             isInWhitelist = False
@@ -53,15 +55,16 @@ def readEmail():
                     isInWhitelist = True
 
             if not isInWhitelist:
-                #print "not in whitelist"
+                print "**** this address is not in whitelist, ignore"
                 continue
+            
+            print "**** this address is in whitelist, will process it"
                     
             allowed_mimetypes = ["application/octet-stream"]
 
             response, lines, octets = p.retr(number)
             message = email.message_from_string('\n'.join(lines))
                     
-            #print "subject ====", email.Header.decode_header(subject)[0][0]
 
             for part in message.walk():
                 
@@ -75,13 +78,15 @@ def readEmail():
                     filename = part.get_filename()
                     
                     if filename==None:
+                        print "**** Not find an attachment, ignore"
                         continue
                     filename = email.Header.decode_header(filename)[0][0]
                     
                     if not 'csv' in filename:
+                        print "**** Not find csv file in attachment, ignore"
                         continue
                     
-                    print "extract csv file: ", filename
+                    print "**** Extract csv file: ", filename
                     
                     data = part.get_payload(decode=True)
                     f = file(filename,'wb')
