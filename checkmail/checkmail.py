@@ -21,7 +21,9 @@ def getWhitelist():
     for line in f:
         line = line.strip()
         print "Add to whitelist: ", line
-        white.append(line)    
+        white.append(line)
+
+    print "**** whitelist add finished! ****"
     return white
 
 
@@ -35,6 +37,8 @@ def readEmail():
         print "Login failed:", e
     else:
         response, listings, octets = p.list()
+        print "****** There are ", len(listings), "mail(s) ******"
+        
         for listing in listings:
             number, size = listing.split()
             response, lines, octets = p.top(number, 0)
@@ -67,6 +71,8 @@ def readEmail():
                     
 
             for part in message.walk():
+                #Maybe comment out the following line, after debug
+                print "****content_type is: ", part.get_content_type()
                 
                 #body
                 #if part.get_content_type() == 'text/plain':
@@ -107,6 +113,7 @@ def readEmail():
 if __name__ == "__main__":
         
     whitelists = getWhitelist() 
-
+    
+    print "****begin to process email****"
     readEmail()
         
