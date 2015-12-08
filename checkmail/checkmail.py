@@ -64,7 +64,7 @@ def readEmail():
             
             print "**** this address is in whitelist, will process it"
                     
-            allowed_mimetypes = ["application/octet-stream"]
+            allowed_mimetypes = ["application/octet-stream","text/csv"]
 
             response, lines, octets = p.retr(number)
             message = email.message_from_string('\n'.join(lines))
