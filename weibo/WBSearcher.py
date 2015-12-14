@@ -14,7 +14,6 @@ class Searcher(object):
         #use proxy to login, if not use, comment it out
         service_args = [
             #'--proxy=127.0.0.1:8087',
-            '--proxy=10.0.13.122:3128',
             '--proxy-type=https',
             ]
 
