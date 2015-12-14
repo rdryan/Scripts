@@ -59,6 +59,20 @@ class Searcher(object):
         
         return
         
+    def postmsg(self, msg):
+        self.driver.get('http://weibo.com')
+        text_element = self.driver.find_element_by_xpath('//textarea[@class="W_input "]')
+        text_element.clear()
+        text_element.send_keys(msg)
+        
+        post_element = self.driver.find_element_by_xpath('//a[contains(@class,"W_btn_a btn_30px")]')
+        post_element.click()
+        print "message "+msg+" has posted"
+
+        return
+        
+            
+    
     def search(self, keyword):
         self.driver.get('https://www.facebook.com/search/str/'+keyword+'/keywords_pages')
         sleep(self.wait)
@@ -72,7 +86,14 @@ class Searcher(object):
         self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
         sleep(self.wait)
 
-    
+
+class ScrapingWeb(object):
+        
+    def get_36kr_title(self):
+            
+        return
+
+
         
 
 if __name__ == '__main__':
@@ -85,6 +106,7 @@ if __name__ == '__main__':
 #     args = parser.parse_args()
 # 
 #     # execute the script
+'''
     email = raw_input("Please Enter Weibo login email: ")
     password = getpass.getpass("Password:")
     
@@ -94,8 +116,11 @@ if __name__ == '__main__':
     print "begin login"
     searcher.login()
     print "login ok"
-    
+   
+    searcher.postmsg("My test from python")
+'''
+
+
     #searcher.search(keyword)
-    
     #searcher.quit()
 
