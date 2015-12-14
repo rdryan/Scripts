@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from argparse import ArgumentParser
 from time import sleep
 import getpass
-import sys
+import sys, os
 import logging
 
 class Searcher(object):
@@ -36,18 +36,30 @@ class Searcher(object):
         password_element = self.driver.find_element_by_name('password')
         password_element.clear()
         password_element.send_keys(self.password)
+        #password_element.submit()
+
+        #find Captcha
+        #captcha_element = self.driver.find_element_by_name('')
+
 
         login_element = self.driver.find_element_by_xpath('//div[@class="info_list login_btn"]/a')
-
         login_element.click()
-        #password_element.submit()
         print "test"
+        
 
         #print self.driver.page_source.encode('utf-8')
         #soup = BeautifulSoup(self.driver.page_source)
         #profile_link = soup.find('a', {'title': 'Profile'})
         #self.profile_name = profile_link.get('href')[25:]    # link appears as http://www.facebook.com/PROFILE
 
+    def showCaptcha(self):
+        #show captcha image, for win7 os
+        os.system('start filename.png')
+        #for linux os
+        #os.system('display filename.png')
+        
+        return
+        
     def search(self, keyword):
         self.driver.get('https://www.facebook.com/search/str/'+keyword+'/keywords_pages')
         sleep(self.wait)
