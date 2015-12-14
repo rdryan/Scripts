@@ -3,6 +3,8 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from argparse import ArgumentParser
 from time import sleep
+import urllib2,urllib
+import urlparse
 import getpass
 import sys, os
 import logging
@@ -43,7 +45,6 @@ class Searcher(object):
 
         login_element = self.driver.find_element_by_xpath('//div[@class="info_list login_btn"]/a')
         login_element.click()
-        print "test"
         
 
         #print self.driver.page_source.encode('utf-8')
@@ -88,13 +89,36 @@ class Searcher(object):
 
 
 class ScrapingWeb(object):
+
+    def __init__(self):
+        return
         
     def get_36kr_title(self):
-            
-        return
-
-
+        req = urllib2.Request('http://36kr.com')
         
+        try:
+            response = urllib2.urlopen(req, timeout=10)
+        except Exception, e:
+            print "Error"
+            return  None
+    
+        sel = BeautifulSoup(response.read())
+        infos = sel.findAll('a',attrs={'class':'title info_flow_news_title'})
+        
+        msg = []
+        for info in infos:
+            title = info.text
+            url = info['href']
+            url = urlparse.urljoin(response.url,url)
+            print title, url, "\n"
+            
+            
+            tmp = title + "--" + url
+            msg.append(tmp)
+            
+        return msg
+
+
 
 if __name__ == '__main__':
 #     """
@@ -106,7 +130,7 @@ if __name__ == '__main__':
 #     args = parser.parse_args()
 # 
 #     # execute the script
-'''
+    
     email = raw_input("Please Enter Weibo login email: ")
     password = getpass.getpass("Password:")
     
@@ -117,10 +141,27 @@ if __name__ == '__main__':
     searcher.login()
     print "login ok"
    
-    searcher.postmsg("My test from python")
-'''
+    #searcher.postmsg("My test from python")
+    
+    sb = ScrapingWeb()
+    msgs = sb.get_36kr_title()
 
+    choose = raw_input("Continue post? (Y|N):")
 
+    if choose == 'N':
+        print "will not post"
+    else:
+        for msg in msgs:
+            print "begin to post..."
+            print msg
+            searcher.postmsg(msg)
+
+            print ("sleep 30 seconds...")
+            sleep(30)
+            print ("30 seconds time out")
+
+        print "post finished. Exit"
+    
     #searcher.search(keyword)
-    #searcher.quit()
+    searcher.quit()
 
