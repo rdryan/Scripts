@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import urlparse
 import urllib2
 import time
+import socket
 
 start_urls = (
     'http://www.yelp.com/http://www.yelp.com/search?find_desc=Restaurants&find_loc=San+Francisco%2C+CAsearch?find_desc=Restaurants&find_loc=San+Francisco%2C+CA',
@@ -16,10 +17,13 @@ def get_request(url):
     req = urllib2.Request(url)
 
     try:
-        response = urllib2.urlopen(req, timeout=20)
+        response = urllib2.urlopen(req, timeout=30)
         return response
-    except Exception, e:
+    except urllib2.URLError, e:
         print "Some Error happened"
+        return False
+    except socket.timeout, e:
+        print "Socket Time Out"
         return False
  
 def parse(response):
@@ -39,6 +43,9 @@ def parse(response):
         parse_listing(response)
 
     next = sel.find('a',attrs={'class':'page-option prev-next next'})
+    if not next:
+        return 
+
     url_i = "http://%s%s" % (urlparse.urlparse(response.url).hostname, next['href'])
     print "=== next page ===", url_i
     time.sleep(2)
@@ -90,5 +97,7 @@ url_lists = open('url_list.txt','r')
 for url in url_lists:
     parse(get_request(url))
 
+url_lists.close()
 file.close()
+
 
