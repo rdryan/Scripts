@@ -32,8 +32,11 @@ def get_request(url):
 def parse(response):
     if not response:
         return
-    
-    html = response.read()
+    try:
+        html = response.read()
+    except socket.timeout, e:
+        print "Socket Time Out"
+        return
     
     sel = BeautifulSoup(html, 'html.parser')
     #infos = sel.findAll('h3',attrs={'class':'search-result-title'})
@@ -59,7 +62,12 @@ def parse_listing(response):
     if not response:
         return
     
-    html = response.read()
+    try:
+        html = response.read()
+    except socket.timeout, e:
+        print "Socket Time Out"
+        return
+    
     sel = BeautifulSoup(html, 'html.parser')
 
     names = sel.find('h1',attrs={'class':'biz-page-title embossed-text-white shortenough'})
