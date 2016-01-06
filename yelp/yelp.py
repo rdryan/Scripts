@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 from bs4 import BeautifulSoup
 import urlparse
@@ -17,7 +20,7 @@ def get_request(url):
     req = urllib2.Request(url)
 
     try:
-        response = urllib2.urlopen(req, timeout=30)
+        response = urllib2.urlopen(req, timeout=100)
         return response
     except urllib2.URLError, e:
         print "Some Error happened"
@@ -57,7 +60,6 @@ def parse_listing(response):
         return
     
     html = response.read()
-    #sel = BeautifulSoup(html)
     sel = BeautifulSoup(html, 'html.parser')
 
     names = sel.find('h1',attrs={'class':'biz-page-title embossed-text-white shortenough'})
@@ -73,11 +75,12 @@ def parse_listing(response):
     email = sel.find('div',attrs={'class':'biz-email'})
     if email:
         print email.find('a').text.strip()
-        item['email'] = website.find('a').text.strip()
+        item['email'] = email.find('a').text.strip()
 
-    file.write('"%s",' % (item['name'].encode('utf-8')))
-    file.write('"%s",' % (item['website'].encode('utf-8')))
-    file.write('"%s"\n' % (item['email'].encode('utf-8')))
+    ofile.write('"%s",' % (item['name'].encode('utf-8')))
+    ofile.write('"%s",' % (item['website'].encode('utf-8')))
+    ofile.write('"%s"\n' % (item['email'].encode('utf-8')))
+
 
 #######################################################################################
 ## Main function
@@ -87,9 +90,9 @@ item['name'] = ''
 item['website'] = ''
 item['email'] = ''
 
-global file
-file = open('infos-%s.csv' % (time.strftime("%Y-%m-%d-%H")), 'w+')
-file.write('name,website,email\n')
+global ofile
+ofile = open('infos-%s.csv' % (time.strftime("%Y-%m-%d-%H")), 'w+')
+ofile.write('name,website,email\n')
 
 # all url are put in a list called 'url_list.txt'
 print "will open url_list.txt to get url list for scraping"
@@ -98,6 +101,6 @@ for url in url_lists:
     parse(get_request(url))
 
 url_lists.close()
-file.close()
+ofile.close()
 
 
