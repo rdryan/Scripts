@@ -40,9 +40,9 @@ def parse(response):
 
     next = sel.find('a',attrs={'class':'page-option prev-next next'})
     url_i = "http://%s%s" % (urlparse.urlparse(response.url).hostname, next['href'])
-    print "========", url_i
+    print "=== next page ===", url_i
     time.sleep(2)
-    #yield parse(get_request(url_i))
+    parse(get_request(url_i))
 
 
 def parse_listing(response):
