@@ -29,7 +29,7 @@ for category in js:
 
     # change the id from 0 to len-1
     for i in range(len(obj)):
-        obj[i]['id'] = i
+        obj[i]['id'] = str(i)
 
     # restore the outpu json structure
     jso[m][key] = obj
