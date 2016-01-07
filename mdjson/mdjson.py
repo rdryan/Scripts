@@ -23,8 +23,12 @@ jso = js
 # process each category
 m = 0
 for category in js:
-    key = category.keys()[0] #hot,new,appliances
+    key = category.keys()[0] #hot,new,appliances, etc
     
+    if 'hot' in key:    #jump 'hot' category
+        m = m+1
+        continue
+
     obj = category[key]
 
     # sort the object by enddate
@@ -42,8 +46,8 @@ for category in js:
 # output json to outfile
 ofilename = "md_" + filename
 fo = open(ofilename,'w')
-json.dump(jso, fo, ensure_ascii=False, indent=4)
-#json.dump(jso, fo, indent=4)
+#json.dump(jso, fo, ensure_ascii=False, indent=4)
+json.dump(jso, fo, indent=4)
 fo.close()
 
 print "output file is: " + ofilename
