@@ -72,7 +72,7 @@ def parse_listing(response):
 
     names = sel.find('h1',attrs={'class':'biz-page-title embossed-text-white shortenough'})
     if names:
-        print names.text.strip()
+        #print names.text.strip()
         item['name'] = names.text.strip()
   
     website = sel.find('div',attrs={'class':'biz-website'})
@@ -85,10 +85,13 @@ def parse_listing(response):
         print email.find('a').text.strip()
         item['email'] = email.find('a').text.strip()
 
-    ofile.write('"%s",' % (item['name'].encode('utf-8')))
-    ofile.write('"%s",' % (item['website'].encode('utf-8')))
-    ofile.write('"%s"\n' % (item['email'].encode('utf-8')))
+    #ofile.write('"%s",' % (item['name'].encode('utf-8')))
+    #ofile.write('"%s",' % (item['website'].encode('utf-8')))
+    #ofile.write('"%s"\n' % (item['email'].encode('utf-8')))
 
+    ofile.write('"%s",' % (item['name']))
+    ofile.write('"%s",' % (item['website']))
+    ofile.write('"%s"\n' % (item['email']))
 
 #######################################################################################
 ## Main function
