@@ -6,6 +6,9 @@
 #**************************************************
 
 import json
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # open json file to js object
 filename = raw_input("please input json file:")
@@ -39,7 +42,8 @@ for category in js:
 # output json to outfile
 ofilename = "md_" + filename
 fo = open(ofilename,'w')
-json.dump(jso,fo, indent=4)
+json.dump(jso, fo, ensure_ascii=False, indent=4)
+#json.dump(jso, fo, indent=4)
 fo.close()
 
 print "output file is: " + ofilename
