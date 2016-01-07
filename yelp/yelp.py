@@ -77,12 +77,12 @@ def parse_listing(response):
   
     website = sel.find('div',attrs={'class':'biz-website'})
     if website:
-        print website.find('a').text.strip()
+        #print website.find('a').text.strip()
         item['website'] = website.find('a').text.strip()
     
     email = sel.find('div',attrs={'class':'biz-email'})
     if email:
-        print email.find('a').text.strip()
+        #print email.find('a').text.strip()
         item['email'] = email.find('a').text.strip()
 
     #ofile.write('"%s",' % (item['name'].encode('utf-8')))
