@@ -16,11 +16,11 @@ class Searcher(object):
         #use proxy to login, if not use, comment it out
         service_args = [
             #'--proxy=127.0.0.1:8087',
-            '--proxy-type=https',
+            #'--proxy-type=https',
             ]
 
-        #self.driver = webdriver.PhantomJS(service_args=service_args)
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.PhantomJS(service_args=service_args)
+        #self.driver = webdriver.Chrome()
         self.email = email
         self.password = password
         self.wait = wait
@@ -62,6 +62,8 @@ class Searcher(object):
         
     def postmsg(self, msg):
         self.driver.get('http://weibo.com')
+        import time
+        time.sleep(5)
         text_element = self.driver.find_element_by_xpath('//textarea[@class="W_input "]')
         text_element.clear()
         text_element.send_keys(msg)
@@ -102,7 +104,7 @@ class ScrapingWeb(object):
             print "Error"
             return  None
     
-        sel = BeautifulSoup(response.read())
+        sel = BeautifulSoup(response.read(),'html.parser')
         infos = sel.findAll('a',attrs={'class':'title info_flow_news_title'})
         
         msg = []
